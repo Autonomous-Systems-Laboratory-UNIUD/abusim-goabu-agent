@@ -3,17 +3,53 @@ package memory
 import (
 	"errors"
 
-	"github.com/abu-lang/goabu/memory"
+	resources "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos/rosresources"
+	vehicles "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos/vehicles"
 )
 
 // New creates a new memory, based on the passed memory controller and items
-func New(controller string, items map[string]map[string]string) (memory.ResourceController, error) {
+func New(controller string, items map[string]map[string]string) (resources.ROSresources, error) {
 	// I check the controller type and I return the correct implementation
 	switch controller {
 	case "basic":
-		return NewBasicMemory(items)
+		base, err := NewBasicMemory(items)
+		if err != nil {
+			return nil, err
+		}
+		mem := resources.NewBaseResourceController(items["string"]["id"])
+		mem.Enclose(base.GetResources())
+		return mem, nil
+	case "copter":
+		base, err := NewBasicMemory(items)
+		if err != nil {
+			return nil, err
+		}
+		vec, err := vehicles.NewCopterVehicleV2(items["string"]["id"], "", nil, nil)
+		if err != nil {
+			return nil, err
+		}
+		mem := resources.NewCopterResourceV2(vec)
+		mem.Resources.Enclose(base.GetResources())
+		return mem, nil
+	case "plane":
+		return nil, errors.New("not yet supported")
+	case "sub":
+		base, err := NewBasicMemory(items)
+		if err != nil {
+			return nil, err
+		}
+		vec, err := vehicles.NewSubVehicle(items["string"]["id"], "", nil, nil)
+		if err != nil {
+			return nil, err
+		}
+		mem := resources.NewSubResource(vec)
+		mem.Resources.Enclose(base.GetResources())
+		return mem, nil
+	case "rover":
+		return nil, errors.New("not yet supported")
+
 	default:
 		// If an invalid controller is passed, I raise an error
-		return nil, errors.New("invalid controller")
+		return nil, errors.New("unsupported controller")
 	}
 }

@@ -7,10 +7,8 @@ import (
 	"github.com/abu-lang/abusim-core/abusim-goabu-agent/endpoint"
 	"github.com/abu-lang/abusim-core/abusim-goabu-agent/memory"
 
+	aburos "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
 	"github.com/abu-lang/abusim-core/schema"
-	"github.com/abu-lang/goabu"
-	"github.com/abu-lang/goabu/communication"
-	goabuconfig "github.com/abu-lang/goabu/config"
 
 	"log"
 )
@@ -35,11 +33,15 @@ func main() {
 	}
 	// ... I create the executer...
 	log.Println("Creating executer")
-	logConfig := goabuconfig.LogConfig{
-		Encoding: "console",
-		Level:    goabuconfig.LogError,
+	//logConfig := goabuconfig.LogConfig{
+	//	Encoding: "console",
+	//	Level:    goabuconfig.LogError,
+	//}
+	abuAgent, err := aburos.NewRosAgent()
+	if err != nil {
+		log.Fatalln(err)
 	}
-	exec, err := goabu.NewExecuter(mem, agent.Rules, communication.NewMemberlistAgent(agent.Name, 5000, logConfig, agent.Endpoints...), logConfig)
+	exec, err := aburos.NewRosExecuter(mem, agent.Rules, abuAgent, agent.Name, "aburos", "lazy")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,7 +60,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	// ... and I start the main message loop
-	go end.HandleMessages(exec, agent, &paused)
+	//go end.HandleMessages(exec, agent, &paused)
 	// Finally, I start the executer loop
 	log.Println("Starting main loop")
 	for {
