@@ -1,9 +1,10 @@
-module github.com/abu-lang/abusim-core/abusim-goabu-agent
+module github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-goabu-agent
 
 go 1.24.0
 
 require (
 	github.com/Autonomous-Systems-Laboratory-UNIUD/aburos v0.0.0
+	github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema  v0.0.0
 	github.com/abu-lang/abusim-core/schema v1.0.0
 	github.com/abu-lang/goabu v0.5.0
 )
@@ -68,3 +69,4 @@ require (
 )
 
 replace github.com/Autonomous-Systems-Laboratory-UNIUD/aburos => ../AbU-ROS
+replace github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema => ../abusim-core/schema

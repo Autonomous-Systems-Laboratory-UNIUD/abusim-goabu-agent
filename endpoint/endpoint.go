@@ -2,13 +2,12 @@ package endpoint
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"net"
 
-	"github.com/abu-lang/abusim-core/schema"
+	"github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
 
-	"github.com/abu-lang/goabu"
+	schema "github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema"
 	steelconfig "github.com/abu-lang/goabu/config"
 )
 
@@ -19,15 +18,6 @@ var nameToLogLevel = map[string]int{
 	"Warning": steelconfig.LogWarning,
 	"Info":    steelconfig.LogInfo,
 	"Debug":   steelconfig.LogDebug,
-}
-
-// logLevelToName converts from a log level to the corresponding name
-var logLevelToName = map[int]string{
-	steelconfig.LogFatal:   "Fatal",
-	steelconfig.LogError:   "Error",
-	steelconfig.LogWarning: "Warning",
-	steelconfig.LogInfo:    "Info",
-	steelconfig.LogDebug:   "Debug",
 }
 
 // AgentEndpoint wraps a schema endpoint to add agent functionality
@@ -78,7 +68,7 @@ func (a *AgentEndpoint) SendInit(name string) error {
 }
 
 // HandleMessages listens for messages and responds to them
-func (a *AgentEndpoint) HandleMessages(exec *goabu.Executer, agent schema.AgentConfiguration, paused *bool) {
+func (a *AgentEndpoint) HandleMessages(exec *aburos.RosExecuter, agent schema.AgentConfiguration, paused *bool) {
 	for {
 		// I read a message...
 		msg, err := a.end.Read()
@@ -100,16 +90,9 @@ func (a *AgentEndpoint) HandleMessages(exec *goabu.Executer, agent schema.AgentC
 			memory.Text = stateMemory.Text
 			memory.Time = stateMemory.Time
 			// ... I get a string representation of the pool...
-			pool := [][]schema.PoolElem{}
-			for _, ruleActions := range statePool {
-				poolActions := []schema.PoolElem{}
-				for _, action := range ruleActions {
-					poolActions = append(poolActions, schema.PoolElem{
-						Resource: action.Resource,
-						Value:    fmt.Sprintf("%v", action.Value),
-					})
-				}
-				pool = append(pool, poolActions)
+			pool := []schema.PoolElem{}
+			for _, update := range statePool {
+				pool = append(pool, schema.PoolElem{Update: update.String()})
 			}
 			// ... and I respond with the state
 			payload := schema.EndpointMessagePayloadMemoryRES{
@@ -149,7 +132,7 @@ func (a *AgentEndpoint) HandleMessages(exec *goabu.Executer, agent schema.AgentC
 			// ... I respond with the debug status
 			payload := schema.EndpointMessagePayloadDebugRES{
 				Paused:    *paused,
-				Verbosity: logLevelToName[exec.LogLevel()],
+				Verbosity: exec.LogLevel(),
 			}
 			err := a.end.Write(&schema.EndpointMessage{
 				Type:    schema.EndpointMessageTypeDebugRES,
@@ -164,7 +147,7 @@ func (a *AgentEndpoint) HandleMessages(exec *goabu.Executer, agent schema.AgentC
 			// ... I execute it...
 			newStatus := msg.Payload.(*schema.EndpointMessagePayloadDebugChangeREQ)
 			*paused = newStatus.Paused
-			exec.SetLogLevel(nameToLogLevel[newStatus.Verbosity])
+			//exec.SetLogLevel(nameToLogLevel[newStatus.Verbosity])
 			// ... and I respond
 			err := a.end.Write(&schema.EndpointMessage{
 				Type:    schema.EndpointMessageTypeDebugChangeRES,

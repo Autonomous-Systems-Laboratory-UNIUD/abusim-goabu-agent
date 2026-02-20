@@ -9,43 +9,43 @@ import (
 )
 
 // New creates a new memory, based on the basic resources
-func NewBasicMemory(items map[string]map[string]string) (memory.ResourceController, error) {
+func NewBasicMemory(items map[string]map[string]any) (memory.ResourceController, error) {
 	// I create an empty basic memory...
 	mem := memory.MakeResources()
 	// ... and I range over the items to initialize it, with the provided initialization value or a default
-	for vartype, values := range items {
-		for name, initvalue := range values {
-			switch vartype {
-			case "bool":
-				if val, err := getBasicMemoryBool(initvalue); err != nil {
-					return nil, fmt.Errorf("invalid initialization value: %w", err)
-				} else {
-					mem.Bool[name] = val
+	for t, m := range items {
+		switch t {
+		case "String":
+			for name, v := range m {
+				val, ok := v.(string)
+				if !ok {
+					return nil, fmt.Errorf("value for key %q is not a string", name)
 				}
-			case "integer":
-				if val, err := getBasicMemoryInteger(initvalue); err != nil {
-					return nil, fmt.Errorf("invalid initialization value: %w", err)
-				} else {
-					mem.Integer[name] = val
+				mem.Text[name] = val
+			}
+		case "Integer":
+			for name, v := range m {
+				val, ok := v.(int64)
+				if !ok {
+					return nil, fmt.Errorf("value for key %q is not a string", name)
 				}
-			case "float":
-				if val, err := getBasicMemoryFloat(initvalue); err != nil {
-					return nil, fmt.Errorf("invalid initialization value: %w", err)
-				} else {
-					mem.Float[name] = val
+				mem.Integer[name] = val
+			}
+		case "Bool":
+			for name, v := range m {
+				val, ok := v.(bool)
+				if !ok {
+					return nil, fmt.Errorf("value for key %q is not a string", name)
 				}
-			case "text":
-				if val, err := getBasicMemoryText(initvalue); err != nil {
-					return nil, fmt.Errorf("invalid initialization value: %w", err)
-				} else {
-					mem.Text[name] = val
+				mem.Bool[name] = val
+			}
+		case "Float":
+			for name, v := range m {
+				val, ok := v.(float64)
+				if !ok {
+					return nil, fmt.Errorf("value for key %q is not a string", name)
 				}
-			case "time":
-				if val, err := getBasicMemoryTime(initvalue); err != nil {
-					return nil, fmt.Errorf("invalid initialization value: %w", err)
-				} else {
-					mem.Time[name] = val
-				}
+				mem.Float[name] = val
 			}
 		}
 	}

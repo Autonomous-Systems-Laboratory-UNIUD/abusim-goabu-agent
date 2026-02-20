@@ -4,11 +4,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/abu-lang/abusim-core/abusim-goabu-agent/endpoint"
-	"github.com/abu-lang/abusim-core/abusim-goabu-agent/memory"
+	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-goabu-agent/endpoint"
+	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-goabu-agent/memory"
 
 	aburos "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
-	"github.com/abu-lang/abusim-core/schema"
+	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema"
 
 	"log"
 )
@@ -46,7 +46,7 @@ func main() {
 		log.Fatal(err)
 	}
 	// ... and I create the paused variable
-	paused := false
+	paused := true
 	// I connect to the coordinator...
 	log.Println("Connecting to coordinator")
 	end, err := endpoint.New()
@@ -60,7 +60,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	// ... and I start the main message loop
-	//go end.HandleMessages(exec, agent, &paused)
+	go end.HandleMessages(exec, agent, &paused)
 	// Finally, I start the executer loop
 	log.Println("Starting main loop")
 	for {

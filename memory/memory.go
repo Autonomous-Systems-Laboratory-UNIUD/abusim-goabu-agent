@@ -8,7 +8,7 @@ import (
 )
 
 // New creates a new memory, based on the passed memory controller and items
-func New(controller string, items map[string]map[string]string) (resources.ROSresources, error) {
+func New(controller string, items map[string]map[string]any) (resources.ROSresources, error) {
 	// I check the controller type and I return the correct implementation
 	switch controller {
 	case "basic":
@@ -16,7 +16,7 @@ func New(controller string, items map[string]map[string]string) (resources.ROSre
 		if err != nil {
 			return nil, err
 		}
-		mem := resources.NewBaseResourceController(items["string"]["id"])
+		mem := resources.NewBaseResourceController(items["Text"]["id"].(string))
 		mem.Enclose(base.GetResources())
 		return mem, nil
 	case "copter":
@@ -24,7 +24,7 @@ func New(controller string, items map[string]map[string]string) (resources.ROSre
 		if err != nil {
 			return nil, err
 		}
-		vec, err := vehicles.NewCopterVehicleV2(items["string"]["id"], "", nil, nil)
+		vec, err := vehicles.NewCopterVehicleV2(items["Text"]["id"].(string), "", nil, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -38,7 +38,7 @@ func New(controller string, items map[string]map[string]string) (resources.ROSre
 		if err != nil {
 			return nil, err
 		}
-		vec, err := vehicles.NewSubVehicle(items["string"]["id"], "", nil, nil)
+		vec, err := vehicles.NewSubVehicle(items["Text"]["id"].(string), "", nil, nil)
 		if err != nil {
 			return nil, err
 		}

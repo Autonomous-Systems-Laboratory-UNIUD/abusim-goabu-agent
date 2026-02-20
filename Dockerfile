@@ -1,24 +1,24 @@
 # Create the building image for compiling
-FROM golang:1.16-alpine as build
+FROM lucagemolotto/aburos-container AS build
 
-RUN apk update
-RUN apk add git
+WORKDIR /home/aislab
+RUN mkdir ./agent
 
-RUN mkdir /agent
-
-WORKDIR /agent/abusim-goabu-agent
-
-COPY ./go.mod .
-COPY ./go.sum .
+COPY ./abusim-core /home/aislab/abusim-core/
+WORKDIR /home/aislab/abusim-core/schema
 RUN go mod download -x
 
-COPY . .
+WORKDIR /home/aislab/agent/abusim-goabu-agent
+COPY --chown=aislab:aislab ./abusim-goabu-agent ./abusim-goabu-agent/entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+RUN go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/aburos \
+ && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema \
+ && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/aburos=../../aburos \
+ && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema=../../abusim-core/schema
+RUN go mod tidy
+RUN go mod download -x
+RUN cat go.mod
 
-RUN CGO_ENABLED=0 go build
+RUN source /opt/ros/humble/setup.bash && source /home/aislab/aburos/aburos_msgs/install/setup.bash && source /home/aislab/rosetta/install/setup.bash && go build
 
-# Create the final image with the executable
-FROM scratch as exec
-
-COPY --from=build /agent/abusim-goabu-agent/abusim-goabu-agent /agent
-
-ENTRYPOINT [ "/agent" ]
+ENTRYPOINT [ "/home/aislab/agent/abusim-goabu-agent/entrypoint.sh" ]
