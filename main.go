@@ -2,6 +2,8 @@ package main
 
 import (
 	"os"
+	"slices"
+	"strconv"
 	"time"
 
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-goabu-agent/endpoint"
@@ -9,11 +11,13 @@ import (
 
 	aburos "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema"
+	rosetta "github.com/Autonomous-Systems-Laboratory-UNIUD/gorosetta"
 
 	"log"
 )
 
 func main() {
+	arduType := []string{"copter", "plane", "sub", "rover"}
 	// I check if a config is present on the Args...
 	if len(os.Args) < 2 {
 		log.Fatalln("Config not found, exiting")
@@ -45,6 +49,15 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	var rosettaNode *rosetta.ROSettaNode
+	if slices.Contains(arduType, agent.MemoryController) {
+		rosettaNode, err = rosetta.NewROSettaNode(agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort), nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	defer rosettaNode.Close()
+
 	// ... and I create the paused variable
 	paused := true
 	// I connect to the coordinator...
@@ -54,6 +67,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	defer end.Close()
+
 	// ... I send to it the initialization message...
 	err = end.SendInit(agent.Name)
 	if err != nil {

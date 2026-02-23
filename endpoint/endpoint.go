@@ -1,9 +1,14 @@
 package endpoint
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"net"
+	"os"
+	"path/filepath"
+	"sort"
 
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
 
@@ -184,6 +189,44 @@ func (a *AgentEndpoint) HandleMessages(exec *aburos.RosExecuter, agent schema.Ag
 				log.Println(err)
 				continue
 			}
+		case schema.EndpointMessageTypeDebugLogREQ:
+			abuLogDir := "./aburos/logger"
+			rosLogDir := "./logs"
+
+			latestAbu, err := latestFile(abuLogDir)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			latestRos, err := latestFile(rosLogDir)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			contentAbu, err := os.ReadFile(latestAbu)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			contentRos, err := os.ReadFile(latestRos)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+
+			serialized, err := json.Marshal(string(contentAbu) + "\n && \n" + string(contentRos))
+			payload := schema.EndpointMessagePayloadLogRES{
+				LogFile: serialized,
+			}
+			err = a.end.Write(&schema.EndpointMessage{
+				Type:    schema.EndpointMessageTypeDebugLogRES,
+				Payload: &payload,
+			})
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+
 		// Otherwise I cannot do anything
 		default:
 			log.Println("Unknown message type")
@@ -194,4 +237,34 @@ func (a *AgentEndpoint) HandleMessages(exec *aburos.RosExecuter, agent schema.Ag
 // Close closes the endpoint connection
 func (e *AgentEndpoint) Close() {
 	e.end.Close()
+}
+
+func latestFile(dir string) (string, error) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return "", err
+	}
+
+	var files []os.FileInfo
+
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		info, err := entry.Info()
+		if err != nil {
+			return "", err
+		}
+		files = append(files, info)
+	}
+
+	if len(files) == 0 {
+		return "", fmt.Errorf("no files in directory %s", dir)
+	}
+
+	sort.Slice(files, func(i, j int) bool {
+		return files[i].ModTime().After(files[j].ModTime())
+	})
+
+	return filepath.Join(dir, files[0].Name()), nil
 }

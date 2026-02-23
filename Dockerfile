@@ -13,8 +13,12 @@ COPY --chown=aislab:aislab ./abusim-goabu-agent ./abusim-goabu-agent/entrypoint.
 RUN chmod +x entrypoint.sh
 RUN go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/aburos \
  && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema \
+ && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/gorosetta \
+ && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/goMavUtil \
  && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/aburos=../../aburos \
- && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema=../../abusim-core/schema
+ && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema=../../abusim-core/schema \
+ && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/gorosetta=../../goROSetta/ROSetta \
+ && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/goMavUtil=../../goROSetta/goMavUtil
 RUN go mod tidy
 RUN go mod download -x
 RUN cat go.mod
