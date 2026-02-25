@@ -23,6 +23,6 @@ RUN go mod tidy
 RUN go mod download -x
 RUN cat go.mod
 
-RUN source /opt/ros/humble/setup.bash && source /home/aislab/aburos/aburos_msgs/install/setup.bash && source /home/aislab/rosetta/install/setup.bash && go build
+RUN source /opt/ros/humble/setup.bash && source /home/aislab/aburos/aburos_msgs/install/setup.bash && source /home/aislab/rosetta/install/setup.bash && source /home/aislab/goROSetta/goROSetta_msgs/install/setup.bash && go build
 
 ENTRYPOINT [ "/home/aislab/agent/abusim-goabu-agent/entrypoint.sh" ]

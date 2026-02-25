@@ -24,11 +24,11 @@ func New(controller string, items map[string]map[string]any) (resources.ROSresou
 		if err != nil {
 			return nil, err
 		}
-		vec, err := vehicles.NewCopterVehicleV2(items["Text"]["id"].(string), "", nil, nil)
+		vec, err := vehicles.NewCopterVehicleV3(items["Text"]["id"].(string), "", nil, nil)
 		if err != nil {
 			return nil, err
 		}
-		mem := resources.NewCopterResourceV2(vec)
+		mem := resources.NewCopterResourceV3(vec)
 		mem.Resources.Enclose(base.GetResources())
 		return mem, nil
 	case "plane":

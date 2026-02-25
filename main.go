@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"slices"
 	"strconv"
@@ -36,7 +37,7 @@ func main() {
 		log.Fatalln(err)
 	}
 	// ... I create the executer...
-	log.Println("Creating executer")
+	log.Println("Creating agent")
 	//logConfig := goabuconfig.LogConfig{
 	//	Encoding: "console",
 	//	Level:    goabuconfig.LogError,
@@ -45,15 +46,17 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	log.Println("Creating executer")
 	exec, err := aburos.NewRosExecuter(mem, agent.Rules, abuAgent, agent.Name, "aburos", "lazy")
 	if err != nil {
 		log.Fatal(err)
 	}
 	var rosettaNode *rosetta.ROSettaNode
 	if slices.Contains(arduType, agent.MemoryController) {
+		log.Println("Creating rosetta node")
 		rosettaNode, err = rosetta.NewROSettaNode(agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort), nil)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err.Error() + fmt.Sprintf(", for agent %s, with address %s:%s", agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort)))
 		}
 	}
 	defer rosettaNode.Close()
