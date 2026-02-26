@@ -1,6 +1,6 @@
 module github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-goabu-agent
 
-go 1.25.5
+go 1.24.4
 
 require (
 	github.com/Autonomous-Systems-Laboratory-UNIUD/aburos v0.0.0
