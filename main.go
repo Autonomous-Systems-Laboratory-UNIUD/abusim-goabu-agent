@@ -54,7 +54,7 @@ func main() {
 	var rosettaNode *rosetta.ROSettaNode
 	if slices.Contains(arduType, agent.MemoryController) {
 		log.Println("Creating rosetta node")
-		rosettaNode, err = rosetta.NewROSettaNode(agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort), nil)
+		rosettaNode, err = rosetta.NewROSettaNode(agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort), agent.SimID, nil)
 		if err != nil {
 			log.Println(err.Error() + fmt.Sprintf(", for agent %s, with address %s:%s", agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort)))
 		}
