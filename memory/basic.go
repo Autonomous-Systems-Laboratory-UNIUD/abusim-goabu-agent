@@ -15,7 +15,7 @@ func NewBasicMemory(items map[string]map[string]any) (memory.ResourceController,
 	// ... and I range over the items to initialize it, with the provided initialization value or a default
 	for t, m := range items {
 		switch t {
-		case "String":
+		case "Text":
 			for name, v := range m {
 				val, ok := v.(string)
 				if !ok {

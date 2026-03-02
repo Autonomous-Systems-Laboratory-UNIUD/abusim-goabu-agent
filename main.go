@@ -36,6 +36,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	fmt.Printf("mem: %v\n", mem)
 	// ... I create the executer...
 	log.Println("Creating agent")
 	//logConfig := goabuconfig.LogConfig{

@@ -1,7 +1,6 @@
 package endpoint
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -74,6 +73,8 @@ func (a *AgentEndpoint) SendInit(name string) error {
 
 // HandleMessages listens for messages and responds to them
 func (a *AgentEndpoint) HandleMessages(exec *aburos.RosExecuter, agent schema.AgentConfiguration, paused *bool) {
+	abuLogDir := "/home/aislab/aburos/logger"
+	rosLogDir := "/home/aislab/logs"
 	for {
 		// I read a message...
 		msg, err := a.end.Read()
@@ -103,6 +104,7 @@ func (a *AgentEndpoint) HandleMessages(exec *aburos.RosExecuter, agent schema.Ag
 			payload := schema.EndpointMessagePayloadMemoryRES{
 				Memory: memory,
 				Pool:   pool,
+				Status: *paused,
 			}
 			err := a.end.Write(&schema.EndpointMessage{
 				Type:    schema.EndpointMessageTypeMemoryRES,
@@ -189,10 +191,7 @@ func (a *AgentEndpoint) HandleMessages(exec *aburos.RosExecuter, agent schema.Ag
 				log.Println(err)
 				continue
 			}
-		case schema.EndpointMessageTypeDebugLogREQ:
-			abuLogDir := "./aburos/logger"
-			rosLogDir := "./logs"
-
+		case schema.EndpointMessageTypeLogREQ:
 			latestAbu, err := latestFile(abuLogDir)
 			if err != nil {
 				log.Println(err)
@@ -214,12 +213,12 @@ func (a *AgentEndpoint) HandleMessages(exec *aburos.RosExecuter, agent schema.Ag
 				continue
 			}
 
-			serialized, err := json.Marshal(string(contentAbu) + "\n && \n" + string(contentRos))
+			combined := string(contentAbu) + "\n && \n" + string(contentRos)
 			payload := schema.EndpointMessagePayloadLogRES{
-				LogFile: serialized,
+				LogFile: combined,
 			}
 			err = a.end.Write(&schema.EndpointMessage{
-				Type:    schema.EndpointMessageTypeDebugLogRES,
+				Type:    schema.EndpointMessageTypeLogRES,
 				Payload: &payload,
 			})
 			if err != nil {
