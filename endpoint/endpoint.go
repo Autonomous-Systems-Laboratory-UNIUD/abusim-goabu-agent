@@ -26,7 +26,8 @@ var nameToLogLevel = map[string]int{
 
 // AgentEndpoint wraps a schema endpoint to add agent functionality
 type AgentEndpoint struct {
-	end *schema.Endpoint
+	end      *schema.Endpoint
+	BridgeOk bool
 }
 
 // New creates a new endpoint, connected to the coordinator
@@ -197,23 +198,30 @@ func (a *AgentEndpoint) HandleMessages(exec *aburos.RosExecuter, agent schema.Ag
 				log.Println(err)
 				continue
 			}
-			latestRos, err := latestFile(rosLogDir)
-			if err != nil {
-				log.Println(err)
-				continue
-			}
 			contentAbu, err := os.ReadFile(latestAbu)
 			if err != nil {
 				log.Println(err)
 				continue
 			}
-			contentRos, err := os.ReadFile(latestRos)
-			if err != nil {
-				log.Println(err)
-				continue
+			combined := string(contentAbu)
+			if (agent.MemoryController == "copter" ||
+				agent.MemoryController == "sub" ||
+				agent.MemoryController == "plane" ||
+				agent.MemoryController == "rover") &&
+				a.BridgeOk {
+				latestRos, err := latestFile(rosLogDir)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+				contentRos, err := os.ReadFile(latestRos)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+				combined = combined + "\n && \n" + string(contentRos)
 			}
 
-			combined := string(contentAbu) + "\n && \n" + string(contentRos)
 			payload := schema.EndpointMessagePayloadLogRES{
 				LogFile: combined,
 			}

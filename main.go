@@ -53,10 +53,12 @@ func main() {
 		log.Fatal(err)
 	}
 	var rosettaNode *rosetta.ROSettaNode
+	bridgeOk := true
 	if slices.Contains(arduType, agent.MemoryController) {
 		log.Println("Creating rosetta node")
 		rosettaNode, err = rosetta.NewROSettaNode(agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort), agent.SimID, nil)
 		if err != nil {
+			bridgeOk = false
 			log.Println(err.Error() + fmt.Sprintf(", for agent %s, with address %s:%s", agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort)))
 		}
 	}
@@ -67,6 +69,7 @@ func main() {
 	// I connect to the coordinator...
 	log.Println("Connecting to coordinator")
 	end, err := endpoint.New()
+	end.BridgeOk = bridgeOk
 	if err != nil {
 		log.Fatalln(err)
 	}
