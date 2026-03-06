@@ -63,8 +63,11 @@ func main() {
 				if try != tries-1 {
 					bridgeOk = false
 					log.Println(err.Error() + fmt.Sprintf(", for agent %s, with address %s:%s", agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort)))
+					timer := time.NewTimer(1 * time.Second)
+					<-timer.C
 				}
 			} else {
+				log.Println("Created rosetta node")
 				break
 			}
 		}
