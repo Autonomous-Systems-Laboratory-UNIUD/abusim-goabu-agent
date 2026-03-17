@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"time"
 
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
 
@@ -33,19 +34,24 @@ type AgentEndpoint struct {
 // New creates a new endpoint, connected to the coordinator
 func New() (*AgentEndpoint, error) {
 	// I resolve the address for the coordinator...
+	log.Println("resolving...")
 	tcpAddr, err := net.ResolveTCPAddr("tcp", "abusim-coordinator:5001")
 	if err != nil {
 		return nil, err
 	}
 	// ... I connect to it...
-	conn, err := net.DialTCP("tcp", nil, tcpAddr)
-	if err != nil {
-		return nil, err
+	for i := 0; i < 50; i++ {
+		log.Println("dialing...")
+		conn, err := net.DialTCP("tcp", nil, tcpAddr)
+		if err == nil {
+			return &AgentEndpoint{
+				end: schema.New(conn),
+			}, nil
+		}
+		log.Printf("Dial attempt %d failed: %v, retrying...", i, err)
+		time.Sleep(time.Duration(i) * 100 * time.Millisecond)
 	}
-	// ... and I return the endpoint
-	return &AgentEndpoint{
-		end: schema.New(conn),
-	}, nil
+	return nil, fmt.Errorf("tcp dial timeout")
 }
 
 // SendInit sends the initialization message to the coordinator

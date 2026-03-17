@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"slices"
 	"strconv"
 	"time"
 
+	"github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-goabu-agent/endpoint"
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-goabu-agent/memory"
 
-	aburos "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema"
 	rosetta "github.com/Autonomous-Systems-Laboratory-UNIUD/gorosetta"
 
@@ -48,12 +49,13 @@ func main() {
 		log.Fatalln(err)
 	}
 	log.Println("Creating executer")
+	//exec := aburos.RosExecuter{}
 	exec, err := aburos.NewRosExecuter(mem, agent.Rules, abuAgent, agent.Name, "aburos", "lazy")
 	if err != nil {
 		log.Fatal(err)
 	}
 	var rosettaNode *rosetta.ROSettaNode
-	bridgeOk := true
+	bridgeOk := false
 	if slices.Contains(arduType, agent.MemoryController) {
 		tries := 4
 		log.Println("Creating rosetta node")
@@ -61,30 +63,32 @@ func main() {
 			rosettaNode, err = rosetta.NewROSettaNode(agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort), agent.SimID, nil)
 			if err != nil {
 				if try != tries-1 {
-					bridgeOk = false
 					log.Println(err.Error() + fmt.Sprintf(", for agent %s, with address %s:%s", agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort)))
-					timer := time.NewTimer(1 * time.Second)
-					<-timer.C
+					time.Sleep(time.Duration(try) * 100 * time.Millisecond)
 				}
 			} else {
+				bridgeOk = true
 				log.Println("Created rosetta node")
 				break
 			}
 		}
 
 	}
-	defer rosettaNode.Close()
+	if bridgeOk {
+		defer rosettaNode.Close()
+	}
 
 	// ... and I create the paused variable
 	paused := true
 	// I connect to the coordinator...
+	time.Sleep(time.Duration(rand.Intn(1500)) * time.Millisecond)
 	log.Println("Connecting to coordinator")
 	end, err := endpoint.New()
-	end.BridgeOk = bridgeOk
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer end.Close()
+	end.BridgeOk = bridgeOk
 
 	// ... I send to it the initialization message...
 	err = end.SendInit(agent.Name)
