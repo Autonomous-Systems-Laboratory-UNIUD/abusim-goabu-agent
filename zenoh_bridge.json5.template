@@ -1,0 +1,21 @@
+{
+  connect: {
+    endpoints: ["tcp/zenoh-router:7447"]
+  },
+  plugins: {
+    ros2dds: {
+      nodename: "zenoh_bridge_AGENT_ID_PLACEHOLDER",
+      ros_localhost_only: true,
+      // Allow only the one public topic, block everything else
+      allow: {
+        publishers:      ["/aburos/aburos/global"],
+        subscribers:     ["/aburos/aburos/global"],
+        service_servers: [],
+        service_clients: [],
+        action_servers:  [],
+        action_clients:  [],
+      },
+    },
+  },
+  mode: "client",
+}
