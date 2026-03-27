@@ -48,6 +48,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	abuAgent.Zenoh = true
 	log.Println("Creating executer")
 	//exec := aburos.RosExecuter{}
 	exec, err := aburos.NewRosExecuter(mem, agent.Rules, abuAgent, agent.Name, "aburos", "lazy")
