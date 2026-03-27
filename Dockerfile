@@ -11,6 +11,8 @@ RUN go mod download -x
 WORKDIR /home/aislab/agent/abusim-goabu-agent
 COPY --chown=aislab:aislab ./abusim-goabu-agent ./abusim-goabu-agent/entrypoint.sh ./
 RUN chmod +x entrypoint.sh
+ENV FASTRTPS_DEFAULT_PROFILES_FILE=/home/aislab/agent/abusim-goabu-agent/fastdds_profile.xml
+ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 RUN go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/aburos \
  && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema \
  && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/gorosetta \
