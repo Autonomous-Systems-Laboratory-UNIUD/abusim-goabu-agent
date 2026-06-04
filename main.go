@@ -4,21 +4,34 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"runtime/debug"
 	"slices"
 	"strconv"
 	"time"
 
-	"github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
+	aburos "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-goabu-agent/endpoint"
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-goabu-agent/memory"
 
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema"
-	rosetta "github.com/Autonomous-Systems-Laboratory-UNIUD/gorosetta"
+	rosetta "github.com/Autonomous-Systems-Laboratory-UNIUD/goROSetta/ROSetta"
 
 	"log"
 )
 
 func main() {
+
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Fprintf(os.Stderr, "PANIC: %v\n", r)
+			debug.PrintStack()
+			os.Exit(1)
+		}
+	}()
+
+	// log every fatal-capable call site, or just add this:
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	arduType := []string{"copter", "plane", "sub", "rover"}
 	// I check if a config is present on the Args...
 	if len(os.Args) < 2 {
@@ -61,7 +74,7 @@ func main() {
 		tries := 4
 		log.Println("Creating rosetta node")
 		for try := range tries {
-			rosettaNode, err = rosetta.NewROSettaNode(agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort), agent.SimID, nil)
+			rosettaNode, err = rosetta.NewROSettaNode(agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort), agent.SimID, 100, nil)
 			if err != nil {
 				if try != tries-1 {
 					log.Println(err.Error() + fmt.Sprintf(", for agent %s, with address %s:%s", agent.Name, agent.SimAddr, strconv.Itoa(agent.SimPort)))

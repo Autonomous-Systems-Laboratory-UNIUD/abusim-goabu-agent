@@ -10,7 +10,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
+	aburos "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
 
 	schema "github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema"
 	steelconfig "github.com/abu-lang/goabu/config"

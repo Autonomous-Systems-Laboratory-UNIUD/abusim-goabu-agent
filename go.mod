@@ -5,7 +5,7 @@ go 1.24.4
 require (
 	github.com/Autonomous-Systems-Laboratory-UNIUD/aburos v0.0.0
 	github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema v0.0.0
-	github.com/Autonomous-Systems-Laboratory-UNIUD/gorosetta v0.0.0
+	github.com/Autonomous-Systems-Laboratory-UNIUD/goROSetta/ROSetta v0.0.0
 	github.com/abu-lang/goabu v0.5.0
 )
 
@@ -79,6 +79,6 @@ replace github.com/Autonomous-Systems-Laboratory-UNIUD/aburos => ../AbU-ROS
 
 replace github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema => ../abusim-core/schema
 
-replace github.com/Autonomous-Systems-Laboratory-UNIUD/gorosetta => ../goROSetta/ROSetta
+replace github.com/Autonomous-Systems-Laboratory-UNIUD/goROSetta/ROSetta => ../goROSetta/ROSetta
 
 replace github.com/Autonomous-Systems-Laboratory-UNIUD/goMavUtil => ../goROSetta/goMavUtil

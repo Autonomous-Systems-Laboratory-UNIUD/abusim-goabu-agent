@@ -23,14 +23,16 @@ RUN chmod +x entrypoint.sh
 #ENV FASTRTPS_DEFAULT_PROFILES_FILE=/home/aislab/agent/abusim-goabu-agent/fastdds_profile.xml
 #ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 #ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+ENV GOTRACEBACK=crash
+ENV GOFLAGS=-trimpath
 RUN go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/aburos \
  && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema \
- && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/gorosetta \
- && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/goMavUtil \
+ && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/goROSetta/ROSetta \
+ && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/goROSetta/goMavUtil \
  && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/aburos=../../aburos \
  && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema=../../abusim-core/schema \
- && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/gorosetta=../../goROSetta/ROSetta \
- && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/goMavUtil=../../goROSetta/goMavUtil
+ && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/goROSetta/ROSetta=../../goROSetta/ROSetta \
+ && go mod edit -replace=github.com/Autonomous-Systems-Laboratory-UNIUD/goROSetta/goMavUtil=../../goROSetta/goMavUtil
 RUN go mod tidy
 RUN go mod download -x
 RUN cat go.mod

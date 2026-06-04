@@ -9,5 +9,5 @@ sed \
   /home/aislab/agent/abusim-goabu-agent/zenoh_bridge.json5.template > /home/aislab/agent/abusim-goabu-agent/bridge.json5
 
 export ROS_LOCALHOST_ONLY=1 && zenoh-bridge-ros2dds -c /home/aislab/agent/abusim-goabu-agent/bridge.json5 &
-
-export ROS_LOCALHOST_ONLY=1 && ./abusim-goabu-agent $1
+ulimit -c unlimited
+export ROS_LOCALHOST_ONLY=1 && export GOTRACEBACK=crash && go run main.go $1
