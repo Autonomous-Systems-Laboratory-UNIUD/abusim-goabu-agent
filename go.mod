@@ -11,7 +11,7 @@ require (
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
-	github.com/Autonomous-Systems-Laboratory-UNIUD/goMavUtil v0.0.0-00010101000000-000000000000 // indirect
+	github.com/Autonomous-Systems-Laboratory-UNIUD/goROSetta/goMavUtil v0.0.0-00010101000000-000000000000 // indirect
 	github.com/Microsoft/go-winio v0.6.1 // indirect
 	github.com/ProtonMail/go-crypto v0.0.0-20230828082145-3c4c8a2d2371 // indirect
 	github.com/alessio/shellescape v1.4.2 // indirect
@@ -81,4 +81,4 @@ replace github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema => ../
 
 replace github.com/Autonomous-Systems-Laboratory-UNIUD/goROSetta/ROSetta => ../goROSetta/ROSetta
 
-replace github.com/Autonomous-Systems-Laboratory-UNIUD/goMavUtil => ../goROSetta/goMavUtil
+replace github.com/Autonomous-Systems-Laboratory-UNIUD/goROSetta/goMavUtil => ../goROSetta/goMavUtil
