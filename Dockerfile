@@ -22,8 +22,9 @@ COPY --chown=aislab:aislab ./abusim-goabu-agent ./abusim-goabu-agent/entrypoint.
 RUN chmod +x entrypoint.sh
 #ENV FASTRTPS_DEFAULT_PROFILES_FILE=/home/aislab/agent/abusim-goabu-agent/fastdds_profile.xml
 #ENV RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-#ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-ENV GOTRACEBACK=crash
+RUN sudo apt install -y ros-humble-rmw-cyclonedds-cpp
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+ENV GOTRACEBACK=all
 ENV GOFLAGS=-trimpath
 RUN go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/aburos \
  && go mod edit -dropreplace=github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-core/schema \
