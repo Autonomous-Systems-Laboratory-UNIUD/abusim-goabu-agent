@@ -30,6 +30,14 @@ func New(controller string, items map[string]map[string]any) (resources.ROSresou
 		if err != nil {
 			return nil, err
 		}
+		err = vec.Init()
+		if err != nil {
+			return nil, err
+		}
+		err = vec.Start()
+		if err != nil {
+			return nil, err
+		}
 		mem := resources.NewCopterResource(vec)
 		mem.Resources.Enclose(base.GetResources())
 		fmt.Println("Initializing copter nodes...")
