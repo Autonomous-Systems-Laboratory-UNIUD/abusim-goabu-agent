@@ -10,6 +10,7 @@ import (
 	"time"
 
 	aburos "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos"
+	abuagent "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos/agent"
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-goabu-agent/endpoint"
 	"github.com/Autonomous-Systems-Laboratory-UNIUD/abusim-goabu-agent/memory"
 
@@ -57,7 +58,7 @@ func main() {
 	//	Encoding: "console",
 	//	Level:    goabuconfig.LogError,
 	//}
-	abuAgent, err := aburos.NewRosAgent()
+	abuAgent, err := abuagent.NewRosAgent()
 	if err != nil {
 		log.Fatalln(err)
 	}
