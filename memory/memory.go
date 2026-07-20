@@ -2,8 +2,6 @@ package memory
 
 import (
 	"errors"
-	"fmt"
-	"time"
 
 	resources "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos/rosresources"
 	vehicles "github.com/Autonomous-Systems-Laboratory-UNIUD/aburos/vehicles"
@@ -40,10 +38,10 @@ func New(controller string, items map[string]map[string]any) (resources.ROSresou
 		}
 		mem := resources.NewCopterResource(vec)
 		mem.Resources.Enclose(base.GetResources())
-		fmt.Println("Initializing copter nodes...")
-		vec.Init()
-		fmt.Println("Initialized copter nodes...")
-		time.Sleep(1 * time.Second)
+		//fmt.Println("Initializing copter nodes...")
+		//vec.Init()
+		//fmt.Println("Initialized copter nodes...")
+		//time.Sleep(1 * time.Second)
 		return mem, nil
 	case "plane":
 		return nil, errors.New("not yet supported")

@@ -58,11 +58,22 @@ func main() {
 	//	Encoding: "console",
 	//	Level:    goabuconfig.LogError,
 	//}
-	abuAgent, err := abuagent.NewRosAgent()
-	if err != nil {
-		log.Fatalln(err)
+	var abuAgent abuagent.RoboAbuAgent
+	switch agent.AgentType {
+	case schema.D2PC:
+		rosAgent, err := abuagent.NewRosAgent()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		rosAgent.Zenoh = true
+		abuAgent = rosAgent
+	case schema.SEQ:
+		abuAgent, err = abuagent.NewSeqAgent()
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
-	abuAgent.Zenoh = true
+
 	log.Println("Creating executer")
 	//exec := aburos.RosExecuter{}
 	exec, err := aburos.NewRosExecuter(mem, agent.Rules, abuAgent, agent.Name, "aburos", "lazy")

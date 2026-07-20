@@ -25,17 +25,17 @@ func NewBasicMemory(items map[string]map[string]any) (memory.ResourceController,
 			}
 		case "Integer":
 			for name, v := range m {
-				val, ok := v.(int64)
+				val, ok := v.(float64) // json unmarshalling shenanigans
 				if !ok {
-					return nil, fmt.Errorf("value for key %q is not a string", name)
+					return nil, fmt.Errorf("value for key %q is not an int64", name)
 				}
-				mem.Integer[name] = val
+				mem.Integer[name] = int64(val)
 			}
 		case "Bool":
 			for name, v := range m {
 				val, ok := v.(bool)
 				if !ok {
-					return nil, fmt.Errorf("value for key %q is not a string", name)
+					return nil, fmt.Errorf("value for key %q is not a bool", name)
 				}
 				mem.Bool[name] = val
 			}
@@ -43,7 +43,7 @@ func NewBasicMemory(items map[string]map[string]any) (memory.ResourceController,
 			for name, v := range m {
 				val, ok := v.(float64)
 				if !ok {
-					return nil, fmt.Errorf("value for key %q is not a string", name)
+					return nil, fmt.Errorf("value for key %q is not a float64", name)
 				}
 				mem.Float[name] = val
 			}
