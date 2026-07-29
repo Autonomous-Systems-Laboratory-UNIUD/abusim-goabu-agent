@@ -10,8 +10,8 @@
       allow: {
         publishers:      ["/aburos/aburos/global"],
         subscribers:     ["/aburos/aburos/global"],
-        service_servers: [],
-        service_clients: [],
+        service_servers: ["/aburos/request_sequence"],
+        service_clients: ["/aburos/request_sequence"],
         action_servers:  [],
         action_clients:  [],
       },

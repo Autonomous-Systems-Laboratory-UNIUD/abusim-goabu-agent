@@ -72,6 +72,12 @@ func main() {
 		if err != nil {
 			log.Fatalln(err)
 		}
+	case schema.ABCAST:
+		abuAgent, err = abuagent.NewABCastAgent()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		abuAgent.Zenoh = true
 	}
 
 	log.Println("Creating executer")
