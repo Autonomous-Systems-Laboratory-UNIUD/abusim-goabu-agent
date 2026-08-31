@@ -73,11 +73,12 @@ func main() {
 			log.Fatalln(err)
 		}
 	case schema.ABCAST:
-		abuAgent, err = abuagent.NewABCastAgent()
+		isisAgent, err := abuagent.NewABCastAgent()
 		if err != nil {
 			log.Fatalln(err)
 		}
-		abuAgent.Zenoh = true
+		isisAgent.Zenoh = true
+		abuAgent = isisAgent
 	}
 
 	log.Println("Creating executer")

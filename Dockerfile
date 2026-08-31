@@ -11,7 +11,7 @@ RUN sudo apt install iproute2 -y
 RUN curl -L https://download.eclipse.org/zenoh/debian-repo/zenoh-public-key | sudo gpg --dearmor --yes --output /etc/apt/keyrings/zenoh-public-key.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/zenoh-public-key.gpg] https://download.eclipse.org/zenoh/debian-repo/ /" | sudo tee -a /etc/apt/sources.list > /dev/null \
     && sudo apt update
-RUN sudo apt install -y zenoh-bridge-ros2dds
+RUN sudo apt install -y zenoh-bridge-ros2dds=1.8.0
 
 COPY ./abusim-core /home/aislab/abusim-core/
 WORKDIR /home/aislab/abusim-core/schema
