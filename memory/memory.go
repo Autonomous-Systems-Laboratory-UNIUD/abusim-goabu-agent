@@ -69,6 +69,9 @@ func New(controller string, items map[string]map[string]any) (resources.ROSresou
 		if err != nil {
 			return nil, err
 		}
+		mem:= resources.NewTurtleResource(vec)
+		mem.Resources.Enclose(base.GetResources())
+		return mem, nil
 
 	default:
 		// If an invalid controller is passed, I raise an error
