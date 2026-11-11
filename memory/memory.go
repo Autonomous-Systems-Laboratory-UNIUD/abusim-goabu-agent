@@ -60,6 +60,16 @@ func New(controller string, items map[string]map[string]any) (resources.ROSresou
 	case "rover":
 		return nil, errors.New("not yet supported")
 
+	case "turtlebot":
+		base, err := NewBasicMemory(items)
+		if err != nil {
+			return nil, err
+		}
+		vec, err := vehicles.NewTurtleVehicle(items["Text"]["id"].(string), "", nil, nil)
+		if err != nil {
+			return nil, err
+		}
+
 	default:
 		// If an invalid controller is passed, I raise an error
 		return nil, errors.New("unsupported controller")
